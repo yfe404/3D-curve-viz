@@ -1,1 +1,20 @@
 [[file:images/curve.gif]]
+
+
+* Install 
+
+** Optional create a virtual env
+#+BEGIN_SRC sh
+python -m venv venv
+source venv/bin/activate
+#+END_SRC
+
+** Install requirements
+#+BEGIN_SRC sh
+pip install -r requirements.txt
+#+END_SRC
+
+* Run the app
+#+BEGIN_SRC sh
+flask run
+#+END_SRC
