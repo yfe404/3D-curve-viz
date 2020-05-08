@@ -8,10 +8,26 @@ app = Flask(
 )
 
 
-@app.route("/")
-def index():
-    points = [[0, 0, 0], [-32, -12, 8]]
-    return render_template("shape.html", points=points)
+def load_curve(curve_id):
+    """
+    Load a curve from a dataset
+
+    :param curve_id: integer, index of the curve
+    :return: Curve object 
+    """
+    raise NotImplementedError
+
+
+@app.route("/<int:curve_id>")
+def index(curve_id):
+    points = load_curve(curve_id)
+    center = [
+        sum([p[0] for p in points]) / len(points),
+        sum([p[1] for p in points]) / len(points),
+        sum([p[2] for p in points]) / len(points),
+    ]
+    print(len(points))
+    return render_template("shape.html", points=points, center=center)
 
 
 if __name__ == "__main__":

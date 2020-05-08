@@ -18,3 +18,29 @@ pip install -r requirements.txt
 #+BEGIN_SRC sh
 flask run
 #+END_SRC
+
+* Setup 
+
+In order to make it works you need to write the code for a few functions:
+
+** load_curve
+
+In =app.py= the function load_curve takes as parameter an =id= and return a 3D curve as 
+an iterable of 3-tuples. See examples section for more. 
+
+
+** Examples   
+
+*** Matlab files loader 
+
+#+BEGIN_SRC python 
+  def load_curve(curve_id):
+      import scipy.io as sio
+
+      data = sio.loadmat(
+          "/path/to/data.mat"
+      )
+      data = data["curves"]
+
+      return data[:, :, curve_id]
+#+END_SRC
