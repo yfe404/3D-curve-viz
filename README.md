@@ -1,38 +1,39 @@
 <img src="images/curve.gif" alt="curve.gif" width="500" height="500" />
 
-* Install 
+# Install 
 
-** Optional create a virtual env
-#+BEGIN_SRC sh
+## Optional create a virtual env
+
+``` sh
 python -m venv venv
 source venv/bin/activate
-#+END_SRC
+```
 
-** Install requirements
-#+BEGIN_SRC sh
+## Install requirements
+``` sh
 pip install -r requirements.txt
-#+END_SRC
+```
 
-* Run the app
-#+BEGIN_SRC sh
+# Run the app
+``` sh
 flask run
-#+END_SRC
+```
 
-* Setup 
+# Setup 
 
 In order to make it works you need to write the code for a few functions:
 
-** load_curve
+## load_curve
 
 In =app.py= the function load_curve takes as parameter an =id= and return a 3D curve as 
 an iterable of 3-tuples. See examples section for more. 
 
 
-** Examples   
+## Examples
 
-*** Matlab files loader 
+### Matlab files loader 
 
-#+BEGIN_SRC python 
+``` python
   def load_curve(curve_id):
       import scipy.io as sio
 
@@ -42,4 +43,4 @@ an iterable of 3-tuples. See examples section for more.
       data = data["curves"]
 
       return data[:, :, curve_id]
-#+END_SRC
+```
