@@ -1,4 +1,4 @@
-<img src="images/curve.gif" alt="curve.gif" width="150" height="100" />
+<img src="images/curve.gif" alt="curve.gif" width="500" height="500" />
 
 * Install 
 
