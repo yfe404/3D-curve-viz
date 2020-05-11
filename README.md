@@ -1,5 +1,8 @@
 <img src="images/curve.gif" alt="curve.gif" width="500" height="500" />
 
+
+<img src="images/curve.gif" alt="curve2.gif" width="500" height="500" />
+
 # Install 
 
 ## Optional create a virtual env
@@ -44,3 +47,28 @@ an iterable of 3-tuples. See examples section for more.
 
       return data[:, :, curve_id]
 ```
+
+### Pathset
+
+``` python
+    source = "/path/to/data.pathset"
+    curve = []
+    with open(source, "r") as f:
+        for line in f.readlines():
+            try:
+                p = [float(x) for x in line.strip().split(" ")]
+                assert len(p) == 3
+                curve.append(p)
+            except:
+                pass
+    return [curve]
+```
+
+
+
+
+
+
+
+
+
