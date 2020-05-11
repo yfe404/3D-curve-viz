@@ -1,7 +1,7 @@
 <img src="images/curve.gif" alt="curve.gif" width="500" height="500" />
 
 
-<img src="images/curve.gif" alt="curve2.gif" width="500" height="500" />
+<img src="images/curve2.gif" alt="curve2.gif" width="500" height="500" />
 
 # Install 
 
