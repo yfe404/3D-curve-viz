@@ -5,6 +5,7 @@ from flask import Flask
 
 app = Flask(
     __name__,
+    static_folder="./static",
     static_url_path="{}/static".format(os.path.abspath(os.path.dirname(__file__))),
 )
 
@@ -18,7 +19,7 @@ def load_curve(curve_id):
     """
     import scipy.io as sio
 
-    data = sio.loadmat(url_for("static", filename="/data/data_hommes.mat"))
+    data = sio.loadmat(url_for("static", filename="data/data_hommes.mat"))
     data = data["fH"]
 
     return data[:, :, curve_id]
