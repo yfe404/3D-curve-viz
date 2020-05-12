@@ -12,10 +12,10 @@
 
       import * as THREE from "{{ url_for('static', filename='scripts/vendor/three.js-r116/build/three.module.js') }}";
 
-      import Stats from "{{ url_for('static', filename='./scripts/vendor/three.js-r116/examples/jsm/libs/stats.module.js') }}";   
-      import { GUI } from "{{ url_for('static', filename='./scripts/vendor/three.js-r116/examples/jsm/libs/dat.gui.module.js') }}";  
+      import Stats from "{{ url_for('static', filename='scripts/vendor/three.js-r116/examples/jsm/libs/stats.module.js') }}";   
+      import { GUI } from "{{ url_for('static', filename='scripts/vendor/three.js-r116/examples/jsm/libs/dat.gui.module.js') }}";  
 
-      import { OrbitControls } from "{{ url_for('static', filename='./scripts/vendor/three.js-r116/examples/jsm/controls/OrbitControls.js') }}"; 
+      import { OrbitControls } from "{{ url_for('static', filename='scripts/vendor/three.js-r116/examples/jsm/controls/OrbitControls.js') }}"; 
 
       var camera, scene, renderer, startTime, object, stats, T, B, N, B_curve, N_curve;
 
