@@ -1,3 +1,5 @@
+[Live Demo](https://curve-viz-3d.herokuapp.com/5 "demo")
+
 <img src="images/curve.gif" alt="curve.gif" width="500" height="500" />
 
 
