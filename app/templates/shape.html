@@ -20,7 +20,7 @@
       var camera, scene, renderer, startTime, object, stats, T, B, N, B_curve, N_curve;
 
       var frame = 0;
-      var maxFrame = 500;
+      var maxFrame = 100;
 
       var startPoint = 0;
       var arr = get_points();
@@ -34,6 +34,7 @@
       var params = {
           showN: true,
           showB: true,
+          frenetSpeed: 1, // 100% frame rate
 //          pause: 
       };
 
@@ -45,24 +46,56 @@
           var gui = new GUI();
           gui.add( params, 'showN' );
           gui.add( params, 'showB' );
+          gui.add( params, 'frenetSpeed', 0, 1, 0.01).onChange( function() {console.log(params.frenetSpeed)});
 
           
 	  camera = new THREE.PerspectiveCamera( 36, window.innerWidth / window.innerHeight, 0.25, 1000 );
 	  camera.position.set(-50, -20, 100);
 
 	  scene = new THREE.Scene();
+          scene.background = new THREE.Color( 0xf0f0f0 );
 
+          // Grid
+          var helper = new THREE.GridHelper( 2000, 100 );
+          helper.position.y = {{center[1]}} - 50;
+          helper.material.opacity = 0.35;
+          helper.material.transparent = true;
+          scene.add( helper );
+
+          
+          
           // Line
-          var material = new THREE.LineBasicMaterial( {
-              color: 0x0000ff,
-              linewidth: 3,
-          } );
 
           var points = get_points();
           var geometry = new THREE.BufferGeometry().setFromPoints( points );
+
+          // Set line colors
+
+          var count = geometry.attributes.position.count;
+          geometry.setAttribute( 'color', new THREE.BufferAttribute( new Float32Array( count * 3 ), 3 ) );
+          var color = new THREE.Color();
+          var positions = geometry.attributes.position;
+          var colors = geometry.attributes.color;
+          console.log(geometry.attributes);
+          console.log(positions);
+
+          {% for col in curvature_colors %}
+          colors.setXYZ( {{ loop.index -1}}, {{ col[0] }}, {{ col[1] }}, {{ col[2] }} ); // rgb betwe
+          {% endfor %}
+          
+          console.log(colors)
+
+          var material = new THREE.LineBasicMaterial( {
+              color: 0xffffff,
+              vertexColors: true,
+              linewidth: 10,
+              flatShading: true,
+              shininess: 0
+          } );
+
           object = new THREE.Line( geometry, material );
           scene.add( object );
-
+     
 
           // test vector
           var origin = new THREE.Vector3({{center[0]}}, {{center[1]}}, {{center[2]}});
@@ -72,15 +105,14 @@
           dir.normalize()
 
           var length = 1;
-          var hex = 0xffffff;
           
-          T = new THREE.ArrowHelper( dir, origin, length, hex );
+          T = new THREE.ArrowHelper( dir, origin, length, 0x0000ff );
           scene.add( T );
 
-          B = new THREE.ArrowHelper( dir, origin, length, hex );
+          B = new THREE.ArrowHelper( dir, origin, length, 0x00ff00 );
           scene.add( B );
 
-          N = new THREE.ArrowHelper( dir, origin, length, hex );
+          N = new THREE.ArrowHelper( dir, origin, length, 0xff0000 );
           scene.add( N );
           
 
@@ -120,6 +152,19 @@
       function animate() {
 	  var currentTime = Date.now();
 	  var time = ( currentTime - startTime ) / 1000;
+          var incrementFrenetPos = false;
+          
+          frame += 1;
+          frame %= maxFrame;
+
+          
+          if (!((frame % parseInt(1 / params.frenetSpeed)))) {
+              incrementFrenetPos = true;
+              if (params.frenetSpeed == 0.0) {
+                  incrementFrenetPos = false;
+              }
+          }
+
 
           setTimeout( function() {
               requestAnimationFrame( animate );
@@ -141,7 +186,7 @@
               var geometry = new THREE.BufferGeometry().setFromPoints( points );
               B_curve = new THREE.Line( geometry, material );
               scene.add( B_curve );
-
+              
 
               var material = new THREE.LineBasicMaterial( {
                   color: 0xff0000,
@@ -156,68 +201,59 @@
               pos = 0;
           }
 
-
-
-          
-          var per = frame / maxFrame,
-              rad = Math.PI * 2 * per,
-              x = Math.cos(rad),
-              y = Math.sin(rad);
-
-
           var tmp = arr[pos];
-
           T.position.copy(tmp);
           B.position.copy(tmp);
           N.position.copy(tmp);
-          pos++;
-          if(pos >= endPoint -1){ pos = 0;}
-
-          var dir = unit_tangeant[pos]
-          T.setDirection(dir.normalize());
           
-          dir = b_vector[pos]
-          B.setDirection(dir.normalize());
-
-          dir = n_vector[pos]
-          N.setDirection(dir.normalize());
-
-
-
-          var points = get_b_vector().slice(0, pos+1)
-          for(var i=0; i < points.length; ++i){
-              points[i].normalize()
-                  .add(arr[i])
+          if (incrementFrenetPos) {
+              pos++;
           }
+              if(pos >= endPoint -1){ pos = 0;}
 
-          var geometry
-          if(!params.showB){
-              geometry = new THREE.BufferGeometry().setFromPoints( [] );
-          } else {
-              geometry = new THREE.BufferGeometry().setFromPoints( points );
-          }
-          B_curve.geometry.dispose();
-          B_curve.geometry = geometry;
-
+              var dir = unit_tangeant[pos]
+              T.setDirection(dir.normalize());
           
-          var points = get_n_vector().slice(0, pos+1)
-          for(var i=0; i < points.length; ++i){
-              points[i].normalize()
-                  .add(arr[i])
-          }
+              dir = b_vector[pos]
+              B.setDirection(dir.normalize());
 
-          if(!params.showN){
-              geometry = new THREE.BufferGeometry().setFromPoints( [] );
-          } else {
-              geometry = new THREE.BufferGeometry().setFromPoints( points );
-          }
-          N_curve.geometry.dispose();
-          N_curve.geometry = geometry;
+              dir = n_vector[pos]
+              N.setDirection(dir.normalize());
 
+
+
+              var points = get_b_vector().slice(0, pos+1)
+              for(var i=0; i < points.length; ++i){
+                  points[i].normalize()
+                      .add(arr[i])
+              }
+
+              var geometry
+              if(!params.showB){
+                  geometry = new THREE.BufferGeometry().setFromPoints( [] );
+              } else {
+                  geometry = new THREE.BufferGeometry().setFromPoints( points );
+              }
+              B_curve.geometry.dispose();
+              B_curve.geometry = geometry;
+              
           
-          frame += 1;
-          frame %= maxFrame;
+              var points = get_n_vector().slice(0, pos+1)
+              for(var i=0; i < points.length; ++i){
+                  points[i].normalize()
+                      .add(arr[i])
+              }
 
+              if(!params.showN){
+                  geometry = new THREE.BufferGeometry().setFromPoints( [] );
+              } else {
+                  geometry = new THREE.BufferGeometry().setFromPoints( points );
+              }
+              N_curve.geometry.dispose();
+              N_curve.geometry = geometry;
+          // end of if incrementFrenetPos
+          
+          
 	  stats.begin();
 	  renderer.render( scene, camera );
 	  stats.end();

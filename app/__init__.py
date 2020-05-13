@@ -1,5 +1,7 @@
 import os.path
 import numpy as np
+import matplotlib
+from matplotlib.cm import get_cmap
 from flask import render_template, url_for
 from flask import Flask
 
@@ -43,6 +45,18 @@ def index(curve_id):
         sum([p[2] for p in points]) / len(points),
     ]
     print(len(points))
+
+    def l2(vector):
+        return np.sqrt(np.sum(vector ** 2))
+
+    a = np.cross(velocity, acceleration)
+    b = [l2(a[i]) for i in range(a.shape[0])]
+    c = np.array([l2(velocity[i]) for i in range(velocity.shape[0])])
+    c = c ** 3
+    k = b / c
+    cmap = get_cmap("coolwarm")
+    curvature_colors = cmap(k)
+
     return render_template(
         "shape.html",
         points=points,
@@ -50,4 +64,5 @@ def index(curve_id):
         unit_tangeant=unit_tangeant,
         b_vector=b_vector,
         n_vector=n_vector,
+        curvature_colors=curvature_colors,
     )
