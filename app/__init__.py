@@ -29,10 +29,11 @@ def load_curve(curve_id):
 
 @app.route("/<int:curve_id>")
 def index(curve_id):
+    from scipy.signal import medfilt
     points = load_curve(curve_id)
 
-    velocity = np.gradient(points, axis=0).round(2)
-    acceleration = np.gradient(velocity, axis=0).round(2)
+    velocity = np.gradient(points, axis=0)
+    acceleration = np.gradient(velocity, axis=0)
     b_vector = np.cross(velocity, acceleration)
     print(b_vector.shape)
     n_vector = np.cross(b_vector, velocity)
